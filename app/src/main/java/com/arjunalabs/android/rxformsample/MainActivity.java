@@ -6,9 +6,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
@@ -29,7 +30,8 @@ public class MainActivity extends ActionBarActivity {
         final Button loginButton = (Button) findViewById(R.id.login_button);
 
         // observe the state of input1
-        Observable<Boolean> input1Observable = WidgetObservable.text(input1).map(new Func1<OnTextChangeEvent, String>() {
+        Observable<Boolean> input1Observable = WidgetObservable.text(input1)
+                .map(new Func1<OnTextChangeEvent, String>() {
             @Override
             public String call(OnTextChangeEvent onTextChangeEvent) {
                 return onTextChangeEvent.text().toString();
@@ -42,7 +44,8 @@ public class MainActivity extends ActionBarActivity {
         });
 
         // observe the state of input2
-        Observable<Boolean> input2Observable = WidgetObservable.text(input2).map(new Func1<OnTextChangeEvent, String>() {
+        Observable<Boolean> input2Observable = WidgetObservable.text(input2)
+                .map(new Func1<OnTextChangeEvent, String>() {
             @Override
             public String call(OnTextChangeEvent onTextChangeEvent) {
                 return onTextChangeEvent.text().toString();
@@ -60,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
             public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
                 return aBoolean && aBoolean2;
             }
-        }).subscribe(new Action1<Boolean>() {
+        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Boolean>() {
             @Override
             public void call(Boolean aBoolean) {
                 loginButton.setEnabled(aBoolean);
